@@ -11,6 +11,17 @@ from portfolio_linalg.config import ProjectConfig
 from portfolio_linalg.covariance import CovarianceResult
 from portfolio_linalg.frontier import compute_frontier, min_variance_portfolio
 
+# Simple calendar scaling for report figures (i.i.d. daily returns approximation).
+TRADING_DAYS_PER_YEAR = 252
+
+
+def annualize_mu(mu_daily: float) -> float:
+    return mu_daily * TRADING_DAYS_PER_YEAR
+
+
+def annualize_sigma(sigma_daily: float) -> float:
+    return sigma_daily * np.sqrt(TRADING_DAYS_PER_YEAR)
+
 
 @dataclass(frozen=True)
 class FrontierSummary:
@@ -22,6 +33,47 @@ class FrontierSummary:
     best_sigma: float
     best_sharpe: float
     high_return_weights: pl.DataFrame
+
+
+def asset_summary_annualized(cov: CovarianceResult) -> pl.DataFrame:
+    """Per-asset mu and sigma scaled to ~252 trading days per year."""
+    daily = asset_summary_table(cov)
+    return (
+        daily.with_columns(
+            (pl.col("mu_daily") * TRADING_DAYS_PER_YEAR).alias("mu_annual"),
+            (pl.col("sigma_daily") * np.sqrt(TRADING_DAYS_PER_YEAR)).alias("sigma_annual"),
+        )
+        .with_columns(
+            (pl.col("mu_annual") / pl.col("sigma_annual")).alias("mu_over_sigma_annual")
+        )
+        .sort("mu_over_sigma_annual", descending=True)
+    )
+
+
+def frontier_points_annualized(frontier: pl.DataFrame) -> pl.DataFrame:
+    """Unique frontier points with annualized mu and sigma."""
+    scale = np.sqrt(TRADING_DAYS_PER_YEAR)
+    return (
+        frontier.select(["mu", "sigma", "r_min_target"])
+        .unique()
+        .sort("mu")
+        .with_columns(
+            (pl.col("mu") * TRADING_DAYS_PER_YEAR).alias("mu_annual"),
+            (pl.col("sigma") * scale).alias("sigma_annual"),
+        )
+    )
+
+
+def min_variance_annualized(cov: CovarianceResult, cfg: ProjectConfig) -> dict[str, float]:
+    mvp = min_variance_portfolio(cov, cfg)
+    mu_d = float(mvp["mu"])
+    sig_d = float(mvp["sigma"])
+    return {
+        "mu_daily": mu_d,
+        "sigma_daily": sig_d,
+        "mu_annual": annualize_mu(mu_d),
+        "sigma_annual": float(annualize_sigma(sig_d)),
+    }
 
 
 def asset_summary_table(cov: CovarianceResult) -> pl.DataFrame:

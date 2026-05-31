@@ -16,13 +16,29 @@ def _ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
 
-def figure_efficient_frontier(frontier: pl.DataFrame) -> Figure:
+def figure_efficient_frontier(
+    frontier: pl.DataFrame,
+    *,
+    annualized: bool = False,
+    trading_days: int = 252,
+) -> Figure:
     pts = frontier.select(["mu", "sigma"]).unique().sort("sigma")
+    if annualized:
+        scale = np.sqrt(trading_days)
+        x = (pts["sigma"] * scale).to_list()
+        y = (pts["mu"] * trading_days).to_list()
+        xlab, ylab = "Annualized volatility", "Annualized expected return"
+        title = f"Efficient frontier (annualized, {trading_days} trading days)"
+    else:
+        x = pts["sigma"].to_list()
+        y = pts["mu"].to_list()
+        xlab, ylab = "Portfolio volatility (sigma)", "Expected return (mu)"
+        title = "Mean-variance efficient frontier (long-only)"
     fig, ax = plt.subplots(figsize=(7, 5))
-    ax.plot(pts["sigma"].to_list(), pts["mu"].to_list(), "o-", linewidth=1.5, markersize=4)
-    ax.set_xlabel("Portfolio volatility (sigma)")
-    ax.set_ylabel("Expected return (mu)")
-    ax.set_title("Mean-variance efficient frontier (long-only)")
+    ax.plot(x, y, "o-", linewidth=1.5, markersize=4)
+    ax.set_xlabel(xlab)
+    ax.set_ylabel(ylab)
+    ax.set_title(title)
     ax.grid(True, alpha=0.3)
     fig.tight_layout()
     return fig
