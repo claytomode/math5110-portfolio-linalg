@@ -29,6 +29,8 @@ Outputs:
 - `python/data/returns.parquet`, `returns.csv`, `metadata.json`
 - `python/figures/*.png`
 
+**Application notebook (Part 3 narrative):** open `python/notebooks/application.ipynb` — loads or fetches data, tables, CVXPY frontier, inline figures. Quick stats: `uv run python scripts/summarize.py`.
+
 **Data:** daily closes via `httpx` from the Yahoo Finance chart API. Citation in `python/data/metadata.json`.
 
 ## Lean
