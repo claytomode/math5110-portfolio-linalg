@@ -1,0 +1,26 @@
+[project]
+name = "portfolio-linalg"
+version = "0.1.0"
+description = "Mean-variance portfolio optimization — matrix analysis course project"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "polars>=1.24",
+    "httpx>=0.28",
+    "numpy>=2.0",
+    "matplotlib>=3.9",
+    "cvxpy>=1.6",
+    "pyyaml>=6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["python/src/portfolio_linalg"]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29",
+]

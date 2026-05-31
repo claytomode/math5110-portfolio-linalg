@@ -1,0 +1,25 @@
+{
+  "source": "yahoo",
+  "yahoo_url_template": "https://query1.finance.yahoo.com/v8/finance/chart/{ticker}",
+  "tickers": [
+    "SPY",
+    "QQQ",
+    "IWM",
+    "XLF",
+    "XLE",
+    "XLK",
+    "EFA",
+    "EEM",
+    "AGG",
+    "TLT",
+    "GLD"
+  ],
+  "start_date": "2024-01-02",
+  "end_date": null,
+  "return_type": "simple",
+  "downloaded_at_utc": "2026-05-31T18:01:25.685054+00:00",
+  "n_obs": 500,
+  "n_assets": 11,
+  "date_min": "2024-05-30",
+  "date_max": "2026-05-29"
+}

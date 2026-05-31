@@ -1,0 +1,22 @@
+# Python / uv
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Lean
+lean/.lake/
+lean/lake-packages/
+lean/build/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

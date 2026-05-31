@@ -1,0 +1,22 @@
+# Default ~11 ETF universe (sector/style mix). Not investment advice.
+tickers:
+  - SPY
+  - QQQ
+  - IWM
+  - XLF
+  - XLE
+  - XLK
+  - EFA
+  - EEM
+  - AGG
+  - TLT
+  - GLD
+
+start_date: "2024-01-02"
+end_date: null
+
+return_type: simple
+
+r_min_points: 15
+
+solver: OSQP
