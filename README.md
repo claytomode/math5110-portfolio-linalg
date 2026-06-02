@@ -48,7 +48,3 @@ See [lean/README.md](lean/README.md).
 
 - **Topic approval:** done (Lean + Python mean–variance matrix analysis)
 - **Data:** Yahoo Finance chart API via `httpx` only
-
-## Scope (honest)
-
-Single-period sample Markowitz; no transaction costs; not competing with industrial QP/MIP solvers.

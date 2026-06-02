@@ -17,7 +17,7 @@ lake build
 | `np.linalg.eigh`, `min(λ) ≥ -tol` | `eigenvalues_nonneg_of_posSemidef`, `posSemidef_of_eigenvalues_nonneg` |
 | `0.5 * quad_form(x, sigma)` in CVXPY | `portfolio_variance_nonneg` |
 | `mu @ x` | `portfolio_mean_eq_dot` |
-| CVXPY frontier loop | *not formalized* (see `PortfolioLinAlg/Scope.lean`) |
+| CVXPY frontier loop | *not formalized* |
 
 ## Modules
 
@@ -27,7 +27,6 @@ lake build
 | `Covariance.lean` | Scatter, sample Σ, portfolio variance |
 | `Eigen.lean` | Eigenvalue PSD criterion (matches `eigh` logic) |
 | `PosDef2.lean` | 2×2 Sylvester minors (`sym2_posSemidef_iff`, proof pending) |
-| `Scope.lean` | Import hub + out-of-scope table |
 
 ## References
 
