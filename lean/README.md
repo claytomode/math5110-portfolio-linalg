@@ -26,6 +26,7 @@ lake build
 | `PSD.lean` | Generic PSD ⇒ quadratic form / eigenvalues |
 | `Covariance.lean` | Scatter, sample Σ, portfolio variance |
 | `Eigen.lean` | Eigenvalue PSD criterion (matches `eigh` logic) |
+| `PosDef2.lean` | 2×2 Sylvester minors (`sym2_posSemidef_iff`, proof pending) |
 | `Scope.lean` | Import hub + out-of-scope table |
 
 ## References

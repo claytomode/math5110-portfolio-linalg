@@ -2,4 +2,5 @@ import PortfolioLinAlg.Basic
 import PortfolioLinAlg.PSD
 import PortfolioLinAlg.Covariance
 import PortfolioLinAlg.Eigen
+import PortfolioLinAlg.PosDef2
 import PortfolioLinAlg.Scope

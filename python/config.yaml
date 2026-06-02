@@ -20,3 +20,9 @@ return_type: simple
 r_min_points: 15
 
 solver: OSQP
+
+# Shrinkage, spectral Sigma, small-n KKT check
+comparison:
+  kkt_tickers: [SPY, AGG, GLD]
+  rank_k: 3
+  eigenvalue_floor: 1.0e-5

@@ -81,7 +81,12 @@ def compute_frontier(
     return pl.DataFrame(long)
 
 
-def min_variance_portfolio(cov: CovarianceResult, cfg: ProjectConfig) -> dict:
+def min_variance_portfolio(
+    cov: CovarianceResult,
+    cfg: ProjectConfig | None = None,
+    *,
+    solver: str | None = None,
+) -> dict:
     """Minimum variance on the grid (no return constraint beyond sum=1, x>=0)."""
     n = len(cov.mu)
     x = cp.Variable(n)
@@ -90,7 +95,8 @@ def min_variance_portfolio(cov: CovarianceResult, cfg: ProjectConfig) -> dict:
         cp.Minimize(0.5 * risk),
         [cp.sum(x) == 1, x >= 0],
     )
-    prob.solve(solver=cfg.solver, verbose=False)
+    sol = solver or (cfg.solver if cfg is not None else "OSQP")
+    prob.solve(solver=sol, verbose=False)
     if x.value is None:
         raise RuntimeError("Min-variance QP failed")
     w = np.asarray(x.value).flatten()

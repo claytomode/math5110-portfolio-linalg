@@ -7,9 +7,11 @@ from dataclasses import dataclass
 import numpy as np
 import polars as pl
 
+from portfolio_linalg.comparison import ComparisonBundle, min_variance_comparison
 from portfolio_linalg.config import ProjectConfig
 from portfolio_linalg.covariance import CovarianceResult
 from portfolio_linalg.frontier import compute_frontier, min_variance_portfolio
+from portfolio_linalg.spectral import eigenportfolio_table
 
 # Simple calendar scaling for report figures (i.i.d. daily returns approximation).
 TRADING_DAYS_PER_YEAR = 252
@@ -137,6 +139,52 @@ def _print_df(df: pl.DataFrame) -> None:
             for k in df.columns
         )
         print(f"  {parts}")
+
+
+def comparison_summary_table(bundle: ComparisonBundle, cfg: ProjectConfig) -> pl.DataFrame:
+    """Min-variance metrics across covariance estimators."""
+    return min_variance_comparison(bundle, cfg)
+
+
+def kkt_summary_table(bundle: ComparisonBundle) -> pl.DataFrame:
+    rows = []
+    for k in bundle.kkt_results:
+        rows.append(
+            {
+                "r_min": k.r_min,
+                "max_weight_diff": k.max_weight_diff,
+                "stationarity_inf": k.stationarity_residual,
+                "comp_slack_max": k.comp_slack_max,
+                "return_slack": k.return_slack,
+                "lambda_sum": k.lambda_sum,
+                "nu_return": k.nu_return,
+                "return_active": k.return_constraint_active,
+                "zero_weights": ",".join(k.zero_weight_tickers) or "-",
+            }
+        )
+    return pl.DataFrame(rows)
+
+
+def kkt_stationarity_table(bundle: ComparisonBundle) -> pl.DataFrame:
+    rows = []
+    for k in bundle.kkt_results:
+        for t, res in zip(bundle.kkt_tickers, k.stationarity, strict=True):
+            rows.append({"r_min": k.r_min, "ticker": t, "stationarity": float(res)})
+    return pl.DataFrame(rows)
+
+
+def print_comparison_summary(bundle: ComparisonBundle, cfg: ProjectConfig) -> None:
+    print("=== Covariance comparison (min-variance) ===")
+    print(f"  Ledoit-Wolf shrinkage: {bundle.lw_shrinkage:.4f}")
+    _print_df(comparison_summary_table(bundle, cfg))
+    print("\n=== KKT verification (3-asset subset) ===")
+    _print_df(kkt_summary_table(bundle))
+    print("\n=== Top eigenportfolio loadings ===")
+    _print_df(
+        bundle.eigenportfolios.filter(pl.col("mode_rank") == 1).select(
+            ["ticker", "loading", "eigenvalue", "variance_share"]
+        )
+    )
 
 
 def print_summary(cov: CovarianceResult, cfg: ProjectConfig, frontier: pl.DataFrame) -> None:

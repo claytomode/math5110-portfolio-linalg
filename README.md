@@ -28,6 +28,7 @@ Outputs:
 
 - `python/data/returns.parquet`, `returns.csv`, `metadata.json`
 - `python/figures/*.png`
+- `python/figures/comparison/*.png` (shrinkage frontiers, spectrum, KKT sensitivity, eigenportfolios)
 
 **Application notebook (Part 3 narrative):** open `python/notebooks/application.ipynb` — loads or fetches data, tables, CVXPY frontier, inline figures. Quick stats: `uv run python scripts/summarize.py`.
 
